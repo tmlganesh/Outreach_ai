@@ -5,40 +5,40 @@
 
 /* ── CSS Custom Properties ─────────────────────────────────── */
 :root {
-    --bg-primary: #f8fafc;
-    --bg-secondary: #ffffff;
-    --bg-card: #ffffff;
-    --bg-card-hover: #f1f5f9;
-    --bg-input: #f1f5f9;
-    --bg-input-focus: #ffffff;
+    --bg-primary: #0A0F1C;
+    --bg-secondary: #121826;
+    --bg-card: #121826;
+    --bg-card-hover: #1A2235;
+    --bg-input: #1A2235;
+    --bg-input-focus: #242D45;
 
-    --text-primary: #1e293b;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
-    --text-heading: #0f172a;
+    --text-primary: #F3F4F6;
+    --text-secondary: #9CA3AF;
+    --text-muted: #6B7280;
+    --text-heading: #FFFFFF;
 
-    --accent-primary: #2563eb;
-    --accent-primary-hover: #1d4ed8;
-    --accent-primary-glow: rgba(37, 99, 235, 0.12);
-    --accent-secondary: #7c3aed;
-    --accent-secondary-glow: rgba(124, 58, 237, 0.1);
+    --accent-primary: #F45B4B;
+    --accent-primary-hover: #D14B3B;
+    --accent-primary-glow: rgba(244, 91, 75, 0.15);
+    --accent-secondary: #FF8F00;
+    --accent-secondary-glow: rgba(255, 143, 0, 0.1);
 
-    --success: #16a34a;
-    --success-bg: rgba(22, 163, 74, 0.08);
-    --warning: #d97706;
-    --warning-bg: rgba(217, 119, 6, 0.08);
-    --error: #dc2626;
-    --error-bg: rgba(220, 38, 38, 0.08);
-    --info: #2563eb;
-    --info-bg: rgba(37, 99, 235, 0.08);
+    --success: #10B981;
+    --success-bg: rgba(16, 185, 129, 0.15);
+    --warning: #F59E0B;
+    --warning-bg: rgba(245, 158, 11, 0.15);
+    --error: #EF4444;
+    --error-bg: rgba(239, 68, 68, 0.15);
+    --info: #3B82F6;
+    --info-bg: rgba(59, 130, 246, 0.15);
 
-    --border: #e2e8f0;
-    --border-light: #cbd5e1;
-    --border-accent: rgba(37, 99, 235, 0.3);
+    --border: #1F2937;
+    --border-light: #374151;
+    --border-accent: rgba(244, 91, 75, 0.3);
 
-    --gradient-brand: linear-gradient(135deg, #2563eb, #1d4ed8);
-    --gradient-card: linear-gradient(145deg, #ffffff, #f8fafc);
-    --gradient-hero: linear-gradient(135deg, #f8fafc 0%, #eff6ff 50%, #f8fafc 100%);
+    --gradient-brand: linear-gradient(135deg, #F45B4B, #FF8F00);
+    --gradient-card: linear-gradient(145deg, #121826, #0A0F1C);
+    --gradient-hero: linear-gradient(135deg, #0A0F1C 0%, #121826 50%, #0A0F1C 100%);
 
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
@@ -98,7 +98,7 @@ a:hover {
 }
 
 .app-header {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(18, 24, 38, 0.92);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
@@ -181,7 +181,7 @@ a:hover {
     text-align: center;
     color: var(--text-muted);
     font-size: 0.8rem;
-    background: #ffffff;
+    background: var(--bg-card);
 }
 
 /* ── Typography ────────────────────────────────────────────── */
@@ -258,7 +258,7 @@ h4 { font-size: 1.1rem; }
 }
 
 .stat-card {
-    background: #ffffff;
+    background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: 1.5rem;
@@ -421,7 +421,7 @@ h4 { font-size: 1.1rem; }
 }
 
 .btn--secondary {
-    background: #ffffff;
+    background: var(--bg-card);
     color: var(--text-primary);
     border-color: var(--border);
     box-shadow: var(--shadow-sm);
@@ -516,7 +516,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-    background: #f8fafc;
+    background: var(--bg-primary);
 }
 
 tbody tr:last-child td {
@@ -556,7 +556,7 @@ tbody tr:last-child td {
 }
 
 .badge--neutral {
-    background: #f1f5f9;
+    background: var(--bg-input);
     color: var(--text-secondary);
 }
 
@@ -609,7 +609,7 @@ tbody tr:last-child td {
     align-items: flex-start;
     gap: 16px;
     padding: 1.25rem;
-    background: #ffffff;
+    background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     transition: all var(--transition-base);
@@ -641,7 +641,7 @@ tbody tr:last-child td {
 }
 
 .pipeline-step--pending .pipeline-step__icon {
-    background: #f1f5f9;
+    background: var(--bg-input);
     color: var(--text-muted);
 }
 
@@ -678,7 +678,7 @@ tbody tr:last-child td {
 
 /* ── Email Preview ─────────────────────────────────────────── */
 .email-preview {
-    background: #ffffff;
+    background: var(--bg-card);
     border-radius: var(--radius-lg);
     padding: 2rem;
     margin: 1rem 0;
@@ -779,7 +779,7 @@ tbody tr:last-child td {
 
 /* ── Approval Section ──────────────────────────────────────── */
 .approval-box {
-    background: #ffffff;
+    background: var(--bg-card);
     border: 2px solid var(--warning);
     border-radius: var(--radius-xl);
     padding: 2rem;
@@ -917,7 +917,7 @@ tbody tr:last-child td {
     gap: 1rem;
     align-items: center;
     padding: 1rem 1.25rem;
-    background: #ffffff;
+    background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     font-size: 0.9rem;
