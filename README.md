@@ -8,7 +8,7 @@ OutreachPilot automates the full outreach workflow: discovering similar companie
 
 ## Architecture & Workflow
 
-![OutreachPilot Architecture](./architecture.png)
+<img src="./architecture.png" alt="OutreachPilot Architecture" width="400">
 
 ### How It Works
 
