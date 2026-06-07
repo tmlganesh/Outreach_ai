@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}OutreachPilot — Pipeline Running{% endblock %}
+
+{% block content %}
+<div class="fade-in" style="max-width: 700px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 class="page-title">Pipeline Running</h1>
+        <p class="page-subtitle">
+            Processing <strong style="color: var(--accent-primary);">{{ domain }}</strong>
+            {% if dry_run %}<span class="badge badge--info" style="margin-left: 8px;">Dry Run</span>{% endif %}
+        </p>
+    </div>
+
+    <div class="pipeline-progress" id="pipeline-steps">
+        <!-- Step 1: Company Search -->
+        <div class="pipeline-step pipeline-step--active" id="step-companies">
+            <div class="pipeline-step__icon"><span class="spinner"></span></div>
+            <div class="pipeline-step__content">
+                <div class="pipeline-step__title">Finding Similar Companies</div>
+                <div class="pipeline-step__desc">Searching Ocean.io for companies similar to {{ domain }}</div>
+            </div>
+        </div>
+
+        <!-- Step 2: Contact Discovery -->
+        <div class="pipeline-step pipeline-step--pending" id="step-contacts">
+            <div class="pipeline-step__icon">👤</div>
+            <div class="pipeline-step__content">
+                <div class="pipeline-step__title">Discovering Decision Makers</div>
+                <div class="pipeline-step__desc">Finding key contacts at target companies via Prospeo</div>
+            </div>
+        </div>
+
+        <!-- Step 3: Email Resolution -->
+        <div class="pipeline-step pipeline-step--pending" id="step-emails">
+            <div class="pipeline-step__icon">✉️</div>
+            <div class="pipeline-step__content">
+                <div class="pipeline-step__title">Resolving Verified Emails</div>
+                <div class="pipeline-step__desc">Verifying work emails through Prospeo &amp; Eazyreach</div>
+            </div>
+        </div>
+
+        <!-- Step 4: Outreach Generation -->
+        <div class="pipeline-step pipeline-step--pending" id="step-outreach">
+            <div class="pipeline-step__icon">📝</div>
+            <div class="pipeline-step__content">
+                <div class="pipeline-step__title">Generating Outreach</div>
+                <div class="pipeline-step__desc">Creating personalized email messages</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="status-text" style="text-align: center; color: var(--text-secondary); margin-top: 1rem;">
+        <div class="spinner spinner--large" style="margin: 0 auto 1rem;"></div>
+        <p>Initializing pipeline...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function() {
+    const runId = "{{ run_id }}";
+    const stageMap = {
+        'companies': 'step-companies',
+        'contacts': 'step-contacts',
+        'emails': 'step-emails',
+        'outreach': 'step-outreach',
+    };
+
+    const stageOrder = ['companies', 'contacts', 'emails', 'outreach'];
+    let lastCompletedIndex = -1;
+
+    function updateStep(stepId, state, message) {
+        const el = document.getElementById(stepId);
+        if (!el) return;
+
+        el.className = 'pipeline-step pipeline-step--' + state;
+        const icon = el.querySelector('.pipeline-step__icon');
+        const desc = el.querySelector('.pipeline-step__desc');
+
+        if (state === 'active') {
+            icon.innerHTML = '<span class="spinner"></span>';
+        } else if (state === 'done') {
+            icon.innerHTML = '✓';
+        } else if (state === 'error') {
+            icon.innerHTML = '✗';
+        }
+
+        if (message) {
+            desc.textContent = message;
+        }
+    }
+
+    async function pollStatus() {
+        try {
+            const resp = await fetch('/status/' + runId);
+            const data = await resp.json();
+
+            // Update status text
+            const statusEl = document.getElementById('status-text');
+            if (data.current_stage) {
+                statusEl.querySelector('p').textContent = data.current_stage;
+            }
+
+            // Process completed stages
+            if (data.stages) {
+                data.stages.forEach(function(s) {
+                    const stepId = stageMap[s.stage];
+                    if (stepId) {
+                        updateStep(stepId, 'done', s.message);
+                    }
+
+                    // Activate next stage
+                    const idx = stageOrder.indexOf(s.stage);
+                    if (idx >= 0 && idx > lastCompletedIndex) {
+                        lastCompletedIndex = idx;
+                        const nextIdx = idx + 1;
+                        if (nextIdx < stageOrder.length) {
+                            const nextStepId = stageMap[stageOrder[nextIdx]];
+                            updateStep(nextStepId, 'active', null);
+                        }
+                    }
+                });
+            }
+
+            if (data.status === 'completed') {
+                statusEl.innerHTML = '<p style="color: var(--success); font-weight: 600;">✓ Pipeline complete! Redirecting...</p>';
+                setTimeout(function() {
+                    window.location.href = '/results/' + runId;
+                }, 1000);
+                return;
+            }
+
+            if (data.status === 'failed') {
+                statusEl.innerHTML = '<p style="color: var(--error);">✗ Pipeline failed: ' + (data.current_stage || 'Unknown error') + '</p>';
+                return;
+            }
+
+            setTimeout(pollStatus, 1500);
+        } catch (err) {
+            setTimeout(pollStatus, 3000);
+        }
+    }
+
+    pollStatus();
+})();
+</script>
+{% endblock %}

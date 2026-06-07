@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}OutreachPilot — Approve{% endblock %}
+{% block content %}
+<div class="fade-in" style="max-width: 700px; margin: 0 auto;">
+    <div class="approval-box">
+        <div class="approval-box__icon">⚠️</div>
+        <h2 class="approval-box__title">Confirm Email Sending</h2>
+        <p class="approval-box__desc">
+            Sending {{ result.messages | length }} personalized emails.
+            {% if result.dry_run %}<br><span class="badge badge--info">Dry Run</span>
+            {% else %}<br><span class="badge badge--warning">Live Mode</span>{% endif %}
+        </p>
+        <div class="approval-stats">
+            <div class="approval-stat"><div class="approval-stat__value">{{ result.total_companies }}</div><div class="approval-stat__label">Companies</div></div>
+            <div class="approval-stat"><div class="approval-stat__value">{{ result.total_contacts }}</div><div class="approval-stat__label">Contacts</div></div>
+            <div class="approval-stat"><div class="approval-stat__value">{{ result.total_emails }}</div><div class="approval-stat__label">Emails</div></div>
+            <div class="approval-stat"><div class="approval-stat__value">{{ result.messages | length }}</div><div class="approval-stat__label">Messages</div></div>
+        </div>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 1rem 0 2rem;">
+            Seed: <strong style="color: var(--accent-primary);">{{ result.seed_domain }}</strong> · Run: {{ result.run_id }}
+        </p>
+        <div class="btn-group" style="justify-content: center;">
+            <a href="/preview/{{ result.run_id }}" class="btn btn--secondary">📧 Review Emails</a>
+            <form action="/send/{{ result.run_id }}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn--{% if result.dry_run %}primary{% else %}success{% endif %} btn--large"
+                        onclick="this.disabled=true; this.textContent='Sending...'; this.form.submit();">
+                    {% if result.dry_run %}🔒 Execute Dry Run{% else %}✓ Approve & Send{% endif %}
+                </button>
+            </form>
+        </div>
+        <div style="margin-top: 1.5rem;"><a href="/results/{{ result.run_id }}" style="color: var(--text-muted); font-size: 0.85rem;">← Back to results</a></div>
+    </div>
+    {% if result.messages %}
+    <div class="card" style="margin-top: 2rem;">
+        <div class="card__header"><h3 class="card__title">Sample Preview</h3><span class="badge badge--neutral">1 of {{ result.messages | length }}</span></div>
+        <div class="email-preview">
+            <div class="email-preview__header">
+                <div class="email-preview__field"><span class="email-preview__label">To:</span><span class="email-preview__value">{{ result.messages[0].to_name }} &lt;{{ result.messages[0].to_email }}&gt;</span></div>
+                <div class="email-preview__field"><span class="email-preview__label">Subject:</span><span class="email-preview__value" style="font-weight: 600;">{{ result.messages[0].subject }}</span></div>
+            </div>
+            <div class="email-preview__body">{{ result.messages[0].body_html | safe }}</div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

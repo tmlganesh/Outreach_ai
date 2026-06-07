@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}OutreachPilot — Error{% endblock %}
+{% block content %}
+<div class="fade-in" style="max-width: 600px; margin: 0 auto;">
+    <div class="empty-state">
+        <div class="empty-state__icon">❌</div>
+        <div class="empty-state__title">Something Went Wrong</div>
+        <div class="empty-state__desc">{{ error or 'An unexpected error occurred.' }}</div>
+        <a href="/" class="btn btn--primary" style="margin-top: 1.5rem;">← Back to Home</a>
+    </div>
+</div>
+{% endblock %}

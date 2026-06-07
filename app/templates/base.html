@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}OutreachPilot{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Automated B2B outreach pipeline — discover companies, find decision makers, and send personalized emails.{% endblock %}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/static/style.css?v=2.0">
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Header -->
+        <header class="app-header">
+            <a href="/" class="app-header__brand">
+                <div class="app-header__logo">OP</div>
+                <span class="app-header__title">OutreachPilot</span>
+            </a>
+            <nav class="app-header__nav">
+                <a href="/" class="nav-link{% if active_page == 'home' %} active{% endif %}">New Run</a>
+                <a href="/history" class="nav-link{% if active_page == 'history' %} active{% endif %}">History</a>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            OutreachPilot v1.0 &mdash; Automated B2B Outreach Pipeline
+        </footer>
+    </div>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

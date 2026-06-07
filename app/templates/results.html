@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}OutreachPilot — Results: {{ result.seed_domain }}{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 class="page-title">Pipeline Results</h1>
+            <p class="page-subtitle" style="margin-bottom: 0;">
+                Seed: <strong style="color: var(--accent-primary);">{{ result.seed_domain }}</strong>
+                &nbsp;·&nbsp; Run ID: <span style="color: var(--text-muted);">{{ result.run_id }}</span>
+                {% if result.dry_run %}<span class="badge badge--info" style="margin-left: 8px;">Dry Run</span>{% endif %}
+            </p>
+        </div>
+        <div class="btn-group">
+            <a href="/preview/{{ result.run_id }}" class="btn btn--secondary">📧 Preview Emails</a>
+            <a href="/approve/{{ result.run_id }}" class="btn btn--primary">Send Emails →</a>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card__label">Companies</div>
+            <div class="stat-card__value stat-card__value--accent">{{ result.total_companies }}</div>
+            <div class="stat-card__delta">Discovered via Ocean.io</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">Contacts</div>
+            <div class="stat-card__value stat-card__value--accent">{{ result.total_contacts }}</div>
+            <div class="stat-card__delta">Decision makers found</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">Verified Emails</div>
+            <div class="stat-card__value stat-card__value--success">{{ result.total_emails }}</div>
+            <div class="stat-card__delta">Ready for outreach</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">Messages</div>
+            <div class="stat-card__value stat-card__value--accent">{{ result.messages | length }}</div>
+            <div class="stat-card__delta">Personalized emails</div>
+        </div>
+    </div>
+
+    <!-- Stage Breakdown -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <div class="card__header">
+            <h3 class="card__title">Stage Breakdown</h3>
+        </div>
+        <div class="table-wrapper" style="border: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Status</th>
+                        <th>Count</th>
+                        <th>Duration</th>
+                        <th>Errors</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stage in result.stages %}
+                    <tr>
+                        <td><strong>{{ stage.stage.value | replace('_', ' ') | title }}</strong></td>
+                        <td>
+                            {% if stage.success %}
+                            <span class="badge badge--success">✓ Success</span>
+                            {% else %}
+                            <span class="badge badge--error">✗ Failed</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ stage.count }}</td>
+                        <td>{{ "%.1f" | format(stage.duration_seconds) }}s</td>
+                        <td>{{ stage.errors | length }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Companies Table -->
+    {% if result.companies %}
+    <div class="card" style="margin-bottom: 2rem;">
+        <div class="card__header">
+            <h3 class="card__title">Discovered Companies</h3>
+            <span class="badge badge--neutral">{{ result.companies | length }}</span>
+        </div>
+        <div class="table-wrapper" style="border: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Domain</th>
+                        <th>Industry</th>
+                        <th>Size</th>
+                        <th>Country</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for company in result.companies[:20] %}
+                    <tr>
+                        <td><strong>{{ company.name or '—' }}</strong></td>
+                        <td><span style="color: var(--accent-primary);">{{ company.domain }}</span></td>
+                        <td>{{ company.industry[:40] if company.industry else '—' }}</td>
+                        <td>{{ company.size or '—' }}</td>
+                        <td>{{ company.country or '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if result.companies | length > 20 %}
+        <div style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+            Showing 20 of {{ result.companies | length }} companies
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Contacts Table -->
+    {% if result.contacts %}
+    <div class="card" style="margin-bottom: 2rem;">
+        <div class="card__header">
+            <h3 class="card__title">Decision Makers</h3>
+            <span class="badge badge--neutral">{{ result.contacts | length }}</span>
+        </div>
+        <div class="table-wrapper" style="border: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Title</th>
+                        <th>Company</th>
+                        <th>Seniority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contact in result.contacts[:20] %}
+                    <tr>
+                        <td><strong>{{ contact.display_name }}</strong></td>
+                        <td>{{ contact.title or '—' }}</td>
+                        <td>{{ contact.company_name or contact.company_domain }}</td>
+                        <td>
+                            {% if contact.seniority %}
+                            <span class="badge badge--info">{{ contact.seniority }}</span>
+                            {% else %}—{% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if result.contacts | length > 20 %}
+        <div style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+            Showing 20 of {{ result.contacts | length }} contacts
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Failed Contacts -->
+    {% if result.failed_contacts %}
+    <div class="card" style="margin-bottom: 2rem;">
+        <div class="card__header">
+            <h3 class="card__title">Failed Contacts</h3>
+            <span class="badge badge--warning">{{ result.failed_contacts | length }}</span>
+        </div>
+        <div class="table-wrapper" style="border: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Title</th>
+                        <th>Company</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fc in result.failed_contacts[:10] %}
+                    <tr>
+                        <td>{{ fc.name }}</td>
+                        <td>{{ fc.title or '—' }}</td>
+                        <td>{{ fc.company or fc.domain }}</td>
+                        <td><span class="badge badge--warning">{{ fc.reason }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

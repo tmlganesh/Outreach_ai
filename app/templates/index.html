@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}OutreachPilot — Start a New Run{% endblock %}
+
+{% block content %}
+<div class="hero fade-in">
+    <div class="hero__badge">
+        ⚡ Automated Outreach Pipeline
+    </div>
+    <h1>Discover, Connect, Outreach</h1>
+    <p>Enter a company domain and let OutreachPilot automatically find similar companies, discover decision makers, resolve verified emails, and generate personalized outreach.</p>
+
+    <form class="hero-form" action="/run" method="post">
+        <div class="hero-form__input-group">
+            <input
+                type="text"
+                name="domain"
+                class="form-input form-input--large"
+                placeholder="e.g. notion.so"
+                required
+                autocomplete="off"
+                spellcheck="false"
+                id="domain-input"
+            >
+            <button type="submit" class="btn btn--primary btn--large">
+                Launch Pipeline →
+            </button>
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 1rem;">
+            <label class="form-checkbox">
+                <input type="checkbox" name="dry_run" value="true">
+                <span class="form-checkbox__label">Dry Run Mode (no emails sent)</span>
+            </label>
+        </div>
+    </form>
+
+    {% if error %}
+    <div class="alert alert--error slide-down" style="max-width: 500px; margin: 1.5rem auto 0;">
+        ⚠️ {{ error }}
+    </div>
+    {% endif %}
+</div>
+
+{% if history %}
+<div class="fade-in" style="animation-delay: 0.2s;">
+    <h3 style="margin-bottom: 1rem; color: var(--text-secondary);">Recent Runs</h3>
+    <div class="history-list">
+        {% for run in history %}
+        <div class="history-item">
+            <span class="history-item__domain">{{ run.seed_domain }}</span>
+            <div class="history-item__stat">
+                <div class="history-item__stat-value">{{ run.total_companies }}</div>
+                <div class="history-item__stat-label">Companies</div>
+            </div>
+            <div class="history-item__stat">
+                <div class="history-item__stat-value">{{ run.total_contacts }}</div>
+                <div class="history-item__stat-label">Contacts</div>
+            </div>
+            <div class="history-item__stat">
+                <div class="history-item__stat-value">{{ run.total_emails }}</div>
+                <div class="history-item__stat-label">Emails</div>
+            </div>
+            <span class="badge {% if run.dry_run %}badge--info{% elif run.total_sent > 0 %}badge--success{% else %}badge--neutral{% endif %}">
+                {% if run.dry_run %}Dry Run{% elif run.total_sent > 0 %}Sent{% else %}Completed{% endif %}
+            </span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

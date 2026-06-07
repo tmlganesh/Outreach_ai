@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}OutreachPilot — Email Preview{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h1 class="page-title">Email Preview</h1>
+            <p class="page-subtitle" style="margin-bottom: 0;">
+                {{ result.messages | length }} personalized messages ready for review
+            </p>
+        </div>
+        <div class="btn-group">
+            <a href="/results/{{ result.run_id }}" class="btn btn--secondary">← Back to Results</a>
+            <a href="/approve/{{ result.run_id }}" class="btn btn--primary">Approve &amp; Send →</a>
+        </div>
+    </div>
+
+    {% if result.messages %}
+    {% for msg in result.messages %}
+    <div class="card" style="margin-bottom: 1.5rem;">
+        <div class="card__header">
+            <h3 class="card__title">Email {{ loop.index }} of {{ result.messages | length }}</h3>
+            <span class="badge badge--{% if msg.status == 'pending' %}neutral{% elif msg.status == 'sent' %}success{% elif msg.status == 'dry_run' %}info{% else %}error{% endif %}">
+                {{ msg.status | title }}
+            </span>
+        </div>
+
+        <div class="email-preview">
+            <div class="email-preview__header">
+                <div class="email-preview__field">
+                    <span class="email-preview__label">To:</span>
+                    <span class="email-preview__value">{{ msg.to_name }} &lt;{{ msg.to_email }}&gt;</span>
+                </div>
+                <div class="email-preview__field">
+                    <span class="email-preview__label">Title:</span>
+                    <span class="email-preview__value">{{ msg.to_title or '—' }}</span>
+                </div>
+                <div class="email-preview__field">
+                    <span class="email-preview__label">Company:</span>
+                    <span class="email-preview__value">{{ msg.company_name }} ({{ msg.company_domain }})</span>
+                </div>
+                <div class="email-preview__field">
+                    <span class="email-preview__label">Subject:</span>
+                    <span class="email-preview__value" style="font-weight: 600;">{{ msg.subject }}</span>
+                </div>
+            </div>
+            <div class="email-preview__body">
+                {{ msg.body_html | safe }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state__icon">📭</div>
+        <div class="empty-state__title">No Messages Generated</div>
+        <div class="empty-state__desc">
+            The pipeline didn't generate any outreach messages. This usually means no verified emails were found.
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

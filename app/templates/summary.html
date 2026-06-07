@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}OutreachPilot — Send Complete{% endblock %}
+{% block content %}
+<div class="fade-in" style="max-width: 700px; margin: 0 auto;">
+    <div style="text-align: center; padding: 2rem 0;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">
+            {% if result.total_failed == 0 %}✅{% else %}⚠️{% endif %}
+        </div>
+        <h1 class="page-title">
+            {% if result.dry_run %}Dry Run Complete{% else %}Emails Sent{% endif %}
+        </h1>
+        <p class="page-subtitle">Run {{ result.run_id }} for {{ result.seed_domain }}</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-card__label">Companies</div>
+            <div class="stat-card__value">{{ result.total_companies }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">Contacts</div>
+            <div class="stat-card__value">{{ result.total_contacts }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">{% if result.dry_run %}Dry Run{% else %}Sent{% endif %}</div>
+            <div class="stat-card__value stat-card__value--success">{{ result.total_sent }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card__label">Failed</div>
+            <div class="stat-card__value {% if result.total_failed > 0 %}stat-card__value--error{% endif %}">{{ result.total_failed }}</div>
+        </div>
+    </div>
+
+    {% if result.total_failed > 0 %}
+    <div class="alert alert--warning">⚠️ {{ result.total_failed }} emails failed to send. Check the exports for details.</div>
+    {% endif %}
+
+    {% if result.duration_seconds %}
+    <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">
+        Total duration: {{ "%.1f" | format(result.duration_seconds) }}s
+    </p>
+    {% endif %}
+
+    <div class="btn-group" style="justify-content: center;">
+        <a href="/" class="btn btn--primary btn--large">🚀 New Run</a>
+        <a href="/history" class="btn btn--secondary">📊 View History</a>
+    </div>
+</div>
+{% endblock %}

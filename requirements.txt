@@ -1,0 +1,38 @@
+# ============================================================
+# OutreachPilot — Dependencies
+# ============================================================
+
+# Web Framework
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+jinja2==3.1.5
+
+# HTTP Client
+httpx==0.28.1
+
+# Data Validation
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# Environment
+python-dotenv==1.0.1
+
+# Templating
+python-multipart==0.0.20
+
+# Logging
+structlog==24.4.0
+
+# CLI
+rich==13.9.4
+
+# Data Export
+openpyxl==3.1.5
+
+# Rate Limiting
+tenacity==9.0.0
+
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.25.0
+pytest-httpx==0.35.0
